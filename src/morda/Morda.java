@@ -52,10 +52,10 @@ public class Morda extends javax.swing.JFrame {
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public FillTable ft = null;
     public List<Message> mesList = new ArrayList<>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
+    public Thread t = null;
     
     /**
      * Creates new form Morda
@@ -107,6 +107,7 @@ public class Morda extends javax.swing.JFrame {
         panelPath = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtMessageArchive = new javax.swing.JTextField();
+        addressbookFrame = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -378,6 +379,17 @@ public class Morda extends javax.swing.JFrame {
 
         propFrame.getContentPane().add(jPanel9, java.awt.BorderLayout.CENTER);
 
+        javax.swing.GroupLayout addressbookFrameLayout = new javax.swing.GroupLayout(addressbookFrame.getContentPane());
+        addressbookFrame.getContentPane().setLayout(addressbookFrameLayout);
+        addressbookFrameLayout.setHorizontalGroup(
+            addressbookFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        addressbookFrameLayout.setVerticalGroup(
+            addressbookFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mailclient by Vital");
         setMinimumSize(new java.awt.Dimension(100, 100));
@@ -397,6 +409,11 @@ public class Morda extends javax.swing.JFrame {
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/AddressBook.png"))); // NOI18N
         jButton6.setText("Address book");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         btnProperties.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/properties.png"))); // NOI18N
         btnProperties.setText("Properties");
@@ -711,7 +728,7 @@ public class Morda extends javax.swing.JFrame {
         
         mail.openFolder("INBOX");
         
-        (ft = new FillTable()).execute();
+        (t = new Thread(new GetMessages())).start();
         
     }//GEN-LAST:event_btnGetMessagesActionPerformed
 
@@ -731,18 +748,21 @@ public class Morda extends javax.swing.JFrame {
     // та запис дати останнього повідомлення у файл
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         
-        if (ft != null) {
-            ft.cancel(true);
+        if (t != null) {
             
-            saveProp.put("LastMessDate", lastMessageDate.toString());
+            t.interrupt();
+            
             util.copyProperties(saveProp, runProp);
             writePropToFile(f, saveProp);
             
             writeMessageToFile(mesList);
-            
         }
         
     }//GEN-LAST:event_btnStopActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        //frameAddressBook.
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -769,6 +789,7 @@ public class Morda extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JFrame addressbookFrame;
     private javax.swing.JButton btnAddServer;
     private javax.swing.JButton btnCheckCon;
     private javax.swing.JButton btnGetMessages;
@@ -1057,59 +1078,59 @@ public class Morda extends javax.swing.JFrame {
     // Зчитування повідомлень з серверу
     // Зберігання їх в архів у вигляді файлів
     // Відображення в таблиці
-    class FillTable extends SwingWorker<Void, Message> {
-        
-        int i = 0;
-        
-        @Override
-        protected Void doInBackground() throws MessagingException, IOException, ParseException, InterruptedException {
-            
-            Message[] m = mail.getMessages();          
-            int i = 0;
-            final int count = m.length;
-        
-            if(count != 0) {
-                
-                do {
-                    publish(m[i]);
-                    i++;
-                } while (i <= count && !isCancelled());
-            } else ft.cancel(true);
-            
-            return null;
-        }
-        
-        @Override
-        protected void process(List<Message> list) {
-        
-            Message nm = list.get(list.size()-1);
-            mesList.add(nm);       
-            try {
-                addDataToTable(nm);
-            } catch (MessagingException ex) {
-                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        // Додавання повідомлення в таблицю
-        private void addDataToTable(Message nm) throws MessagingException {
-            
-            String subject = nm.getSubject();
-            
-            Address[] a = nm.getFrom();
-            String from = a[0].toString();
-            
-            Date d = nm.getSentDate();
-            lastMessageDate = d;
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            
-            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            Object[] obj = {null, subject, from, df.format(d)};
-            model.addRow(obj);
-            
-            lblIn.setText(String.valueOf(model.getRowCount()));
-        }
-    }
+//    class FillTable extends SwingWorker<Void, Message> {
+//        
+//        int i = 0;
+//        
+//        @Override
+//        protected Void doInBackground() throws MessagingException, IOException, ParseException, InterruptedException {
+//            
+//            Message[] m = mail.getMessages();          
+//            int i = 0;
+//            final int count = m.length;
+//        
+//            if(count != 0) {
+//                
+//                do {
+//                    publish(m[i]);
+//                    i++;
+//                } while (i <= count && !isCancelled());
+//            } else ft.cancel(true);
+//            
+//            return null;
+//        }
+//        
+//        @Override
+//        protected void process(List<Message> list) {
+//        
+//            Message nm = list.get(list.size()-1);
+//            mesList.add(nm);       
+//            try {
+//                addDataToTable(nm);
+//            } catch (MessagingException ex) {
+//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//        // Додавання повідомлення в таблицю
+//        private void addDataToTable(Message nm) throws MessagingException {
+//            
+//            String subject = nm.getSubject();
+//            
+//            Address[] a = nm.getFrom();
+//            String from = a[0].toString();
+//            
+//            Date d = nm.getSentDate();
+//            lastMessageDate = d;
+//            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//            
+//            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+//            Object[] obj = {null, subject, from, df.format(d)};
+//            model.addRow(obj);
+//            
+//            lblIn.setText(String.valueOf(model.getRowCount()));
+//        }
+//    }
 
     // Відображення вмісту повідомлення при позиціонуванні курсору на ньому
     class RowListener implements ListSelectionListener {
@@ -1173,5 +1194,45 @@ public class Morda extends javax.swing.JFrame {
         }
     }
     
+    class GetMessages implements Runnable {
+
+        @Override
+        public void run() {
+            
+            Message[] m = mail.getMessages();          
+            final int count = m.length;
+        
+            //if(count != 0) {
+            if(count != 0) {
+                System.out.println("Count = " + count);
+            }
+                for (int i = 0; i <= count; i++) {
+                    mesList.add(m[i]);     
+                    try {
+                        addDataToTable(m[i]);
+                    } catch (MessagingException ex) {
+                        Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            //}
+        }
+        
+        private void addDataToTable(Message nm) throws MessagingException {
+            
+            String subject = nm.getSubject();
+            
+            Address[] a = nm.getFrom();
+            String from = a[0].toString();
+            
+            Date d = nm.getSentDate();
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            Object[] obj = {null, subject, from, df.format(d)};
+            model.addRow(obj);
+            
+            lblIn.setText(String.valueOf(model.getRowCount()));
+        }
+    }
 }
 

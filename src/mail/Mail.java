@@ -99,6 +99,7 @@ public class Mail {
     public Message[] getMessages() {
         try {
             m = folder.getMessages();
+            System.out.println("Succesfuly");
         } catch (MessagingException ex) {
             Logger.getLogger(Mail.class.getName()).log(Level.SEVERE, null, ex);
         }
