@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +30,6 @@ import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -728,7 +726,7 @@ public class Morda extends javax.swing.JFrame {
         
         mail.openFolder("INBOX");
         
-        (t = new Thread(new GetMessages())).start();
+        (t = new Thread(new GetMessages())).start();        
         
     }//GEN-LAST:event_btnGetMessagesActionPerformed
 
@@ -748,9 +746,15 @@ public class Morda extends javax.swing.JFrame {
     // та запис дати останнього повідомлення у файл
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         
-        if (t != null) {
+        if (t.isAlive()) {
             
             t.interrupt();
+            
+            if(t.isInterrupted()){
+                print("Thread is interrupted.");
+            } else {
+                print("Thread is not interrupted.");
+            }
             
             util.copyProperties(saveProp, runProp);
             writePropToFile(f, saveProp);
@@ -1074,63 +1078,6 @@ public class Morda extends javax.swing.JFrame {
         }
         
     }
-    
-    // Зчитування повідомлень з серверу
-    // Зберігання їх в архів у вигляді файлів
-    // Відображення в таблиці
-//    class FillTable extends SwingWorker<Void, Message> {
-//        
-//        int i = 0;
-//        
-//        @Override
-//        protected Void doInBackground() throws MessagingException, IOException, ParseException, InterruptedException {
-//            
-//            Message[] m = mail.getMessages();          
-//            int i = 0;
-//            final int count = m.length;
-//        
-//            if(count != 0) {
-//                
-//                do {
-//                    publish(m[i]);
-//                    i++;
-//                } while (i <= count && !isCancelled());
-//            } else ft.cancel(true);
-//            
-//            return null;
-//        }
-//        
-//        @Override
-//        protected void process(List<Message> list) {
-//        
-//            Message nm = list.get(list.size()-1);
-//            mesList.add(nm);       
-//            try {
-//                addDataToTable(nm);
-//            } catch (MessagingException ex) {
-//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//
-//        // Додавання повідомлення в таблицю
-//        private void addDataToTable(Message nm) throws MessagingException {
-//            
-//            String subject = nm.getSubject();
-//            
-//            Address[] a = nm.getFrom();
-//            String from = a[0].toString();
-//            
-//            Date d = nm.getSentDate();
-//            lastMessageDate = d;
-//            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-//            
-//            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-//            Object[] obj = {null, subject, from, df.format(d)};
-//            model.addRow(obj);
-//            
-//            lblIn.setText(String.valueOf(model.getRowCount()));
-//        }
-//    }
 
     // Відображення вмісту повідомлення при позиціонуванні курсору на ньому
     class RowListener implements ListSelectionListener {
@@ -1198,41 +1145,47 @@ public class Morda extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            
-            Message[] m = mail.getMessages();          
-            final int count = m.length;
+
+            Message[] m = mail.getMessages();                                
+            System.out.println(m.length);
+
+            int count = m.length;
+            int j = 0;
+            while (j <= count && !Thread.interrupted()) {
+                if(mesList.add(m[j])) {
+                    System.out.println("Message "+ j +" added succesfuly.");
+                    addDataToTable(m[j]);
+                } else {
+                    System.out.println("Something wrong!!!");
+                };
+                j++;
+            }                              
+        }
         
-            //if(count != 0) {
-            if(count != 0) {
-                System.out.println("Count = " + count);
+        private void addDataToTable(Message nm) {
+            
+            try {
+                String subject = nm.getSubject();
+                
+                Address[] a = nm.getFrom();
+                String from = a[0].toString();
+                
+                Date d = nm.getSentDate();
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                Object[] obj = {null, subject, from, df.format(d)};
+                model.addRow(obj);
+                
+                lblIn.setText(String.valueOf(model.getRowCount()));
+            } catch (MessagingException ex) {
+                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
             }
-                for (int i = 0; i <= count; i++) {
-                    mesList.add(m[i]);     
-                    try {
-                        addDataToTable(m[i]);
-                    } catch (MessagingException ex) {
-                        Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            //}
         }
-        
-        private void addDataToTable(Message nm) throws MessagingException {
-            
-            String subject = nm.getSubject();
-            
-            Address[] a = nm.getFrom();
-            String from = a[0].toString();
-            
-            Date d = nm.getSentDate();
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            
-            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            Object[] obj = {null, subject, from, df.format(d)};
-            model.addRow(obj);
-            
-            lblIn.setText(String.valueOf(model.getRowCount()));
-        }
+    }
+
+    public static void print(String str) {
+        System.out.println(str);
     }
 }
 
