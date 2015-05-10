@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import util.Concurent;
 import util.Utilities;
 
 /**
@@ -759,9 +761,7 @@ public class Morda extends javax.swing.JFrame {
             util.copyProperties(saveProp, runProp);
             writePropToFile(f, saveProp);
             
-            writeMessageToFile(mesList);
         }
-        
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1015,69 +1015,69 @@ public class Morda extends javax.swing.JFrame {
     }
     
     // Запис повідомлення в файл
-    private void writeMessageToFile(List<Message> list) {
-        
-        for (Message m : list) {
-            
-            //<editor-fold defaultstate="collapsed" desc="date">
-            Date d = null;
-            try {
-                d = m.getSentDate();
-            } catch (MessagingException ex) {
-                //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Some problems with date");
-            }
-            
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(d);
-            
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int min = cal.get(Calendar.MINUTE);
-            int sec = cal.get(Calendar.SECOND);
-            
-            String smonth, sday, shour, smin, ssec;
-            
-            if (month < 10) {
-                smonth = "0"+String.valueOf(month);
-            } else smonth = String.valueOf(month);
-            
-            if (day < 10) {
-                sday = "0"+String.valueOf(day);
-            } else sday = String.valueOf(day);
-            
-            if(hour < 10) {
-                shour = "0"+String.valueOf(hour);
-            } else shour = String.valueOf(hour);
-            
-            if(min < 10) {
-                smin = "0"+String.valueOf(min);
-            } else smin = String.valueOf(min);
-            
-            if(sec < 10) {
-                ssec = "0"+String.valueOf(sec);
-            } else ssec = String.valueOf(sec);
-//</editor-fold>
-                    
-            String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
-            File file = new File(runProp.getProperty("PathToMessages") + "//" + name);
-            try {
-                file.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            try (OutputStream os = new FileOutputStream(file);){
-                m.writeTo(os);
-                System.out.println("File " + file.getName() + " was wrote succesfuly");
-            } catch (IOException | MessagingException ex) {
-                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-        }
-        
-    }
+//    private void writeMessageToFile(List<Message> list) {
+//        
+//        for (Message m : list) {
+//            
+//            //<editor-fold defaultstate="collapsed" desc="date">
+//            Date d = null;
+//            try {
+//                d = m.getSentDate();
+//            } catch (MessagingException ex) {
+//                //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//                System.out.println("Some problems with date");
+//            }
+//            
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(d);
+//            
+//            int year = cal.get(Calendar.YEAR);
+//            int month = cal.get(Calendar.MONTH);
+//            int day = cal.get(Calendar.DAY_OF_MONTH);
+//            int hour = cal.get(Calendar.HOUR_OF_DAY);
+//            int min = cal.get(Calendar.MINUTE);
+//            int sec = cal.get(Calendar.SECOND);
+//            
+//            String smonth, sday, shour, smin, ssec;
+//            
+//            if (month < 10) {
+//                smonth = "0"+String.valueOf(month);
+//            } else smonth = String.valueOf(month);
+//            
+//            if (day < 10) {
+//                sday = "0"+String.valueOf(day);
+//            } else sday = String.valueOf(day);
+//            
+//            if(hour < 10) {
+//                shour = "0"+String.valueOf(hour);
+//            } else shour = String.valueOf(hour);
+//            
+//            if(min < 10) {
+//                smin = "0"+String.valueOf(min);
+//            } else smin = String.valueOf(min);
+//            
+//            if(sec < 10) {
+//                ssec = "0"+String.valueOf(sec);
+//            } else ssec = String.valueOf(sec);
+////</editor-fold>
+//                    
+//            String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
+//            File file = new File(runProp.getProperty("PathToMessages") + "//" + name);
+//            try {
+//                file.createNewFile();
+//            } catch (IOException ex) {
+//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            
+//            try (OutputStream os = new FileOutputStream(file);){
+//                m.writeTo(os);
+//                System.out.println("File " + file.getName() + " was wrote succesfuly");
+//            } catch (IOException | MessagingException ex) {
+//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//            }            
+//        }
+//        
+//    }
 
     // Відображення вмісту повідомлення при позиціонуванні курсору на ньому
     class RowListener implements ListSelectionListener {
