@@ -95,6 +95,5 @@ public class WriteMessages implements Runnable{
                 Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
             }            
         }
-        
     }
 }

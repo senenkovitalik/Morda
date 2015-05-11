@@ -13,12 +13,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -37,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import util.RemoveMessage;
 import util.Utilities;
 import util.WriteMessages;
 
@@ -136,7 +134,7 @@ public class Morda extends javax.swing.JFrame {
         lblSubject = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         paneShowMessage = new javax.swing.JEditorPane();
@@ -556,7 +554,7 @@ public class Morda extends javax.swing.JFrame {
         });
         jTable2.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         jTable2.setFillsViewportHeight(true);
-        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable2.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane1.setViewportView(jTable2);
 
         jPanel5.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -578,8 +576,13 @@ public class Morda extends javax.swing.JFrame {
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png"))); // NOI18N
         jButton2.setText("Forward");
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/delete-16.png"))); // NOI18N
-        jButton3.setText("Delete");
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/delete-16.png"))); // NOI18N
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -604,7 +607,7 @@ public class Morda extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(btnDelete)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -612,7 +615,7 @@ public class Morda extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -760,13 +763,22 @@ public class Morda extends javax.swing.JFrame {
             
             util.copyProperties(saveProp, runProp);
             writePropToFile(f, saveProp);
-            (t = new Thread(new WriteMessages(mesList, runProp))).start();
+            (new Thread(new WriteMessages(mesList, runProp))).start();
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         //frameAddressBook.
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        print("Stop button was pressed");
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+        int[] rows = jTable2.getSelectedRows();
+        
+        (new Thread(new RemoveMessage(rows, mesList, lblIn, tm))).start();
+        
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -796,6 +808,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JFrame addressbookFrame;
     private javax.swing.JButton btnAddServer;
     private javax.swing.JButton btnCheckCon;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnGetMessages;
     private javax.swing.JButton btnProperties;
     private javax.swing.JButton btnStop;
@@ -804,7 +817,6 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JComboBox comboSMTPCon;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JCheckBox jCheckBox1;
@@ -1013,71 +1025,6 @@ public class Morda extends javax.swing.JFrame {
         
         return m;
     }
-    
-    // Запис повідомлення в файл
-//    private void writeMessageToFile(List<Message> list) {
-//        
-//        for (Message m : list) {
-//            
-//            //<editor-fold defaultstate="collapsed" desc="date">
-//            Date d = null;
-//            try {
-//                d = m.getSentDate();
-//            } catch (MessagingException ex) {
-//                //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-//                System.out.println("Some problems with date");
-//            }
-//            
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTime(d);
-//            
-//            int year = cal.get(Calendar.YEAR);
-//            int month = cal.get(Calendar.MONTH);
-//            int day = cal.get(Calendar.DAY_OF_MONTH);
-//            int hour = cal.get(Calendar.HOUR_OF_DAY);
-//            int min = cal.get(Calendar.MINUTE);
-//            int sec = cal.get(Calendar.SECOND);
-//            
-//            String smonth, sday, shour, smin, ssec;
-//            
-//            if (month < 10) {
-//                smonth = "0"+String.valueOf(month);
-//            } else smonth = String.valueOf(month);
-//            
-//            if (day < 10) {
-//                sday = "0"+String.valueOf(day);
-//            } else sday = String.valueOf(day);
-//            
-//            if(hour < 10) {
-//                shour = "0"+String.valueOf(hour);
-//            } else shour = String.valueOf(hour);
-//            
-//            if(min < 10) {
-//                smin = "0"+String.valueOf(min);
-//            } else smin = String.valueOf(min);
-//            
-//            if(sec < 10) {
-//                ssec = "0"+String.valueOf(sec);
-//            } else ssec = String.valueOf(sec);
-////</editor-fold>
-//                    
-//            String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
-//            File file = new File(runProp.getProperty("PathToMessages") + "//" + name);
-//            try {
-//                file.createNewFile();
-//            } catch (IOException ex) {
-//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            
-//            try (OutputStream os = new FileOutputStream(file);){
-//                m.writeTo(os);
-//                System.out.println("File " + file.getName() + " was wrote succesfuly");
-//            } catch (IOException | MessagingException ex) {
-//                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-//            }            
-//        }
-//        
-//    }
 
     // Відображення вмісту повідомлення при позиціонуванні курсору на ньому
     class RowListener implements ListSelectionListener {
