@@ -37,8 +37,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
-import util.Concurent;
 import util.Utilities;
+import util.WriteMessages;
 
 /**
  *
@@ -760,7 +760,7 @@ public class Morda extends javax.swing.JFrame {
             
             util.copyProperties(saveProp, runProp);
             writePropToFile(f, saveProp);
-            
+            (t = new Thread(new WriteMessages(mesList, runProp))).start();
         }
     }//GEN-LAST:event_btnStopActionPerformed
 

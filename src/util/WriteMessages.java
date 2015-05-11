@@ -35,7 +35,6 @@ public class WriteMessages implements Runnable{
     
     @Override
     public void run() {
-        //List<Message> list, Properties runProp
         
         for (Message m : list) {
             
