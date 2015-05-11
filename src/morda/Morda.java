@@ -28,14 +28,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
-import util.MyMessage;
 import util.RemoveMessage;
 import util.Utilities;
 import util.WriteMessages;
@@ -52,7 +48,7 @@ public class Morda extends javax.swing.JFrame {
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public List<MyMessage> mesList = new ArrayList<>();
+    public List<Message> mesList = new ArrayList<>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
     public Thread t = null;
@@ -778,7 +774,7 @@ public class Morda extends javax.swing.JFrame {
         DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
         int[] rows = jTable2.getSelectedRows();
         
-        (new Thread(new RemoveMessage(rows, mesList, lblIn, tm))).start();
+        (new Thread(new RemoveMessage(rows, mesList, lblIn, tm, runProp))).start();
         
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -963,7 +959,7 @@ public class Morda extends javax.swing.JFrame {
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     
                     String name = produceFileName(mime);
-                    mesList.add(new MyMessage(mime,name));
+                    mesList.add(mime);
                     
                     Object[] obj = {null, mime.getSubject(), from, df.format(mime.getSentDate())};
                     model.addRow(obj);
@@ -1105,7 +1101,7 @@ public class Morda extends javax.swing.JFrame {
             while (j <= count && !Thread.interrupted()) {
                 
                 String name = produceFileName(m[j]);
-                if(mesList.add(new MyMessage(m[j], name))) {
+                if(mesList.add(m[j])) {
                     System.out.println("Message "+ j +" added succesfuly.");
                     addDataToTable(m[j]);
                 } else {

@@ -25,10 +25,10 @@ import morda.Morda;
  */
 public class WriteMessages implements Runnable{
 
-    private List<MyMessage> list;
+    private List<Message> list;
     private Properties properties;
     
-    public WriteMessages(List<MyMessage> list, Properties properties) {
+    public WriteMessages(List<Message> list, Properties properties) {
         this.list = list;
         this.properties = properties;
     }
@@ -38,49 +38,50 @@ public class WriteMessages implements Runnable{
         
         for (Message m : list) {
             
-            //<editor-fold defaultstate="collapsed" desc="date">
-            Date d = null;
-            try {
-                d = m.getSentDate();
-            } catch (MessagingException ex) {
-                //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Some problems with date");
-            }
-            
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(d);
-            
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int min = cal.get(Calendar.MINUTE);
-            int sec = cal.get(Calendar.SECOND);
-            
-            String smonth, sday, shour, smin, ssec;
-            
-            if (month < 10) {
-                smonth = "0"+String.valueOf(month);
-            } else smonth = String.valueOf(month);
-            
-            if (day < 10) {
-                sday = "0"+String.valueOf(day);
-            } else sday = String.valueOf(day);
-            
-            if(hour < 10) {
-                shour = "0"+String.valueOf(hour);
-            } else shour = String.valueOf(hour);
-            
-            if(min < 10) {
-                smin = "0"+String.valueOf(min);
-            } else smin = String.valueOf(min);
-            
-            if(sec < 10) {
-                ssec = "0"+String.valueOf(sec);
-            } else ssec = String.valueOf(sec);
+//            //<editor-fold defaultstate="collapsed" desc="date">
+//            Date d = null;
+//            try {
+//                d = m.getSentDate();
+//            } catch (MessagingException ex) {
+//                //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//                System.out.println("Some problems with date");
+//            }
+//            
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(d);
+//            
+//            int year = cal.get(Calendar.YEAR);
+//            int month = cal.get(Calendar.MONTH);
+//            int day = cal.get(Calendar.DAY_OF_MONTH);
+//            int hour = cal.get(Calendar.HOUR_OF_DAY);
+//            int min = cal.get(Calendar.MINUTE);
+//            int sec = cal.get(Calendar.SECOND);
+//            
+//            String smonth, sday, shour, smin, ssec;
+//            
+//            if (month < 10) {
+//                smonth = "0"+String.valueOf(month);
+//            } else smonth = String.valueOf(month);
+//            
+//            if (day < 10) {
+//                sday = "0"+String.valueOf(day);
+//            } else sday = String.valueOf(day);
+//            
+//            if(hour < 10) {
+//                shour = "0"+String.valueOf(hour);
+//            } else shour = String.valueOf(hour);
+//            
+//            if(min < 10) {
+//                smin = "0"+String.valueOf(min);
+//            } else smin = String.valueOf(min);
+//            
+//            if(sec < 10) {
+//                ssec = "0"+String.valueOf(sec);
+//            } else ssec = String.valueOf(sec);
 //</editor-fold>
-                    
-            String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
+    
+            String name = Morda.produceFileName(m);
+                    //year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
             File file = new File(properties.getProperty("PathToMessages") + "//" + name);
             try {
                 file.createNewFile();
