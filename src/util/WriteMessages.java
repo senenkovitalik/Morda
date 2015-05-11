@@ -25,10 +25,10 @@ import morda.Morda;
  */
 public class WriteMessages implements Runnable{
 
-    private List<Message> list;
+    private List<MyMessage> list;
     private Properties properties;
     
-    public WriteMessages(List<Message> list, Properties properties) {
+    public WriteMessages(List<MyMessage> list, Properties properties) {
         this.list = list;
         this.properties = properties;
     }

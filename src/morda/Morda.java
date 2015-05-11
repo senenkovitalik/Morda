@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import util.MyMessage;
 import util.RemoveMessage;
 import util.Utilities;
 import util.WriteMessages;
@@ -50,7 +52,7 @@ public class Morda extends javax.swing.JFrame {
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public List<Message> mesList = new ArrayList<>();
+    public List<MyMessage> mesList = new ArrayList<>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
     public Thread t = null;
@@ -926,7 +928,7 @@ public class Morda extends javax.swing.JFrame {
         h.getColumn(3).setMaxWidth(120);
         
         jTable2.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        jTable2.getSelectionModel().addListSelectionListener(new RowListener());
+        //jTable2.getSelectionModel().addListSelectionListener(new RowListener());
         
         setMailboxName();
         
@@ -960,7 +962,9 @@ public class Morda extends javax.swing.JFrame {
                     String from = a[0].toString();
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     
-                    mesList.add(mime);
+                    String name = produceFileName(mime);
+                    mesList.add(new MyMessage(mime,name));
+                    
                     Object[] obj = {null, mime.getSubject(), from, df.format(mime.getSentDate())};
                     model.addRow(obj);
                     
@@ -1027,66 +1031,66 @@ public class Morda extends javax.swing.JFrame {
     }
 
     // Відображення вмісту повідомлення при позиціонуванні курсору на ньому
-    class RowListener implements ListSelectionListener {
-        
-        @Override
-        public void valueChanged(ListSelectionEvent lse) {
-            if (lse.getValueIsAdjusting()) {
-                return;
-            }
-            
-            //showMessage();
-        }
-
-        public void showMessage() {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    
-                    int row = jTable2.getSelectedRow();
-                  
-                    String contentType = null, from = null, subject = null;
-
-                    try {
-                        contentType = mesList.get(row).getContentType();
-                        Address[] a = mesList.get(row).getFrom(); 
-                        from = a[0].toString();
-                        subject = mesList.get(row).getSubject();
-                    } catch (MessagingException ex) {
-                        Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                    
-                    if(contentType.equals("text/html")){
-                        
-                        paneShowMessage.setText("");
-                        paneShowMessage.setContentType("text/html");
-                        try {
-                            paneShowMessage.setText((String) mesList.get(row).getContent());
-                        } catch (IOException ex) {
-                            Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (MessagingException ex) {
-                            Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    
-                    if(from.length() > 40) {
-                        String cutFrom = from.substring(0, 40) + "...";
-                        lblFrom.setText(cutFrom);
-                        lblFrom.setToolTipText(from);
-                    } else lblFrom.setText(from);
-                    
-                    if(subject.length() > 40) {
-                        String cutSubject = subject.substring(0, 40) + "...";
-                        lblSubject.setText(cutSubject);
-                        lblSubject.setToolTipText(subject);
-                    } else lblSubject.setText(subject);
-                   
-                }
-            });        
-        }
-    }
+//    class RowListener implements ListSelectionListener {
+//        
+//        @Override
+//        public void valueChanged(ListSelectionEvent lse) {
+//            if (lse.getValueIsAdjusting()) {
+//                return;
+//            }
+//            
+//            //showMessage();
+//        }
+//
+//        public void showMessage() {
+//            SwingUtilities.invokeLater(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    
+//                    int row = jTable2.getSelectedRow();
+//                  
+//                    String contentType = null, from = null, subject = null;
+//
+//                    try {
+//                        contentType = mesList.get(row).getContentType();
+//                        Address[] a = mesList.get(row).getFrom(); 
+//                        from = a[0].toString();
+//                        subject = mesList.get(row).getSubject();
+//                    } catch (MessagingException ex) {
+//                        Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    
+//                    
+//                    if(contentType.equals("text/html")){
+//                        
+//                        paneShowMessage.setText("");
+//                        paneShowMessage.setContentType("text/html");
+//                        try {
+//                            paneShowMessage.setText((String) mesList.get(row).getContent());
+//                        } catch (IOException ex) {
+//                            Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//                        } catch (MessagingException ex) {
+//                            Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                    
+//                    if(from.length() > 40) {
+//                        String cutFrom = from.substring(0, 40) + "...";
+//                        lblFrom.setText(cutFrom);
+//                        lblFrom.setToolTipText(from);
+//                    } else lblFrom.setText(from);
+//                    
+//                    if(subject.length() > 40) {
+//                        String cutSubject = subject.substring(0, 40) + "...";
+//                        lblSubject.setText(cutSubject);
+//                        lblSubject.setToolTipText(subject);
+//                    } else lblSubject.setText(subject);
+//                   
+//                }
+//            });        
+//        }
+//    }
     
     class GetMessages implements Runnable {
 
@@ -1099,7 +1103,9 @@ public class Morda extends javax.swing.JFrame {
             int count = m.length;
             int j = 0;
             while (j <= count && !Thread.interrupted()) {
-                if(mesList.add(m[j])) {
+                
+                String name = produceFileName(m[j]);
+                if(mesList.add(new MyMessage(m[j], name))) {
                     System.out.println("Message "+ j +" added succesfuly.");
                     addDataToTable(m[j]);
                 } else {
@@ -1133,6 +1139,54 @@ public class Morda extends javax.swing.JFrame {
 
     public static void print(String str) {
         System.out.println(str);
+    }
+    
+    public static String produceFileName(Message message) {
+        //<editor-fold defaultstate="collapsed" desc="date">
+                Date d = null;
+                try {
+                    d = message.getSentDate();
+                } catch (MessagingException ex) {
+                    //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Some problems with date");
+                }
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(d);
+
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                int min = cal.get(Calendar.MINUTE);
+                int sec = cal.get(Calendar.SECOND);
+
+                String smonth, sday, shour, smin, ssec;
+
+                if (month < 10) {
+                    smonth = "0"+String.valueOf(month);
+                } else smonth = String.valueOf(month);
+
+                if (day < 10) {
+                    sday = "0"+String.valueOf(day);
+                } else sday = String.valueOf(day);
+
+                if(hour < 10) {
+                    shour = "0"+String.valueOf(hour);
+                } else shour = String.valueOf(hour);
+
+                if(min < 10) {
+                    smin = "0"+String.valueOf(min);
+                } else smin = String.valueOf(min);
+
+                if(sec < 10) {
+                    ssec = "0"+String.valueOf(sec);
+                } else ssec = String.valueOf(sec);
+                //</editor-fold>
+                    
+        String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
+        
+        return name;
     }
 }
 
