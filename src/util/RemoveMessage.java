@@ -13,6 +13,7 @@ import javax.mail.Message;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 import morda.Morda;
+import static morda.Morda.print;
 
 /**
  *
@@ -45,17 +46,17 @@ public class RemoveMessage implements Runnable{
             
             if(f.exists()) {
                 System.out.println("File exist");
+                if(f.delete()) {
+                    print(properties.getProperty("PathToMessages") + "\\" + fileName + " was deleted");
+                } else {
+                    print("File not deleted");
+                };
             } else {
                 System.out.println("File not exist");
             }
-            System.out.println(properties.getProperty("PathToMessages") + "\\" + fileName);
-            
-            f.delete();
-                
-            
             
             list.remove(j);
-            label.setText(String.valueOf(tm.getColumnCount()));
+            label.setText(String.valueOf(tm.getRowCount()));
             System.out.println("Row " +rows[j]+ " removed");
         }
     }

@@ -755,13 +755,12 @@ public class Morda extends javax.swing.JFrame {
             
             if(t.isInterrupted()){
                 print("Thread is interrupted.");
+                util.copyProperties(saveProp, runProp);
+                writePropToFile(f, saveProp);
+                (new Thread(new WriteMessages(mesList, runProp))).start();
             } else {
                 print("Thread is not interrupted.");
             }
-            
-            util.copyProperties(saveProp, runProp);
-            writePropToFile(f, saveProp);
-            (new Thread(new WriteMessages(mesList, runProp))).start();
         }
     }//GEN-LAST:event_btnStopActionPerformed
 

@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -35,10 +33,8 @@ public class WriteMessages implements Runnable{
     
     @Override
     public void run() {
-        
-        for (Message m : list) {
-            
-//            //<editor-fold defaultstate="collapsed" desc="date">
+        list.stream().forEach((m) -> {
+            //<editor-fold defaultstate="collapsed" desc="date">
 //            Date d = null;
 //            try {
 //                d = m.getSentDate();
@@ -78,10 +74,11 @@ public class WriteMessages implements Runnable{
 //            if(sec < 10) {
 //                ssec = "0"+String.valueOf(sec);
 //            } else ssec = String.valueOf(sec);
-//</editor-fold>
-    
+//            //</editor-fold>
+//
+            
             String name = Morda.produceFileName(m);
-                    //year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
+//            String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
             File file = new File(properties.getProperty("PathToMessages") + "//" + name);
             try {
                 file.createNewFile();
@@ -94,7 +91,7 @@ public class WriteMessages implements Runnable{
                 System.out.println("File " + file.getName() + " was wrote succesfuly");
             } catch (IOException | MessagingException ex) {
                 Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-        }
+            }
+        });
     }
 }
