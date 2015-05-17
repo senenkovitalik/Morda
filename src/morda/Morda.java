@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Address;
@@ -48,7 +49,7 @@ public class Morda extends javax.swing.JFrame {
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public List<Message> mesList = new ArrayList<>();
+    public List<Message> mesList = new CopyOnWriteArrayList<Message>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
     public Thread t = null;
@@ -754,12 +755,12 @@ public class Morda extends javax.swing.JFrame {
             t.interrupt();
             
             if(t.isInterrupted()){
-                print("Thread is interrupted.");
+                util.print("Thread is interrupted.");
                 util.copyProperties(saveProp, runProp);
                 writePropToFile(f, saveProp);
                 (new Thread(new WriteMessages(mesList, runProp))).start();
             } else {
-                print("Thread is not interrupted.");
+                util.print("Thread is not interrupted.");
             }
         }
     }//GEN-LAST:event_btnStopActionPerformed
@@ -769,7 +770,7 @@ public class Morda extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        print("Stop button was pressed");
+        util.print("Deete button was pressed");
         DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
         int[] rows = jTable2.getSelectedRows();
         
@@ -1093,7 +1094,7 @@ public class Morda extends javax.swing.JFrame {
         public void run() {
 
             Message[] m = mail.getMessages();                                
-            System.out.println(m.length);
+            System.out.println("Count of messages " + m.length);
 
             int count = m.length;
             int j = 0;
@@ -1130,10 +1131,6 @@ public class Morda extends javax.swing.JFrame {
                 Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    public static void print(String str) {
-        System.out.println(str);
     }
     
     public static String produceFileName(Message message) {

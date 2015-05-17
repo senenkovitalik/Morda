@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public class Utilities {
     
-    public Properties defProp;
+    private Properties defProp;
     
     public Properties rewrite(String key, String value, Properties sourceProp) {
         defProp = new Properties();
@@ -31,5 +31,9 @@ public class Utilities {
             Object key = propertyNames.nextElement();
             dest_prop.put(key, src_prop.get(key));
         }
+    }
+    
+    public void print(String str) {
+        System.out.println(str);
     }
 }

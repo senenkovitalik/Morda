@@ -13,7 +13,6 @@ import javax.mail.Message;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 import morda.Morda;
-import static morda.Morda.print;
 
 /**
  *
@@ -27,6 +26,7 @@ public class RemoveMessage implements Runnable{
     private DefaultTableModel tm;
     private File f = null;
     private Properties properties;
+    private Utilities util = new Utilities();
     
     public RemoveMessage(int[] rows, List<Message> list, JLabel label, DefaultTableModel tm, Properties properties) {
         this.rows = rows;
@@ -47,9 +47,9 @@ public class RemoveMessage implements Runnable{
             if(f.exists()) {
                 System.out.println("File exist");
                 if(f.delete()) {
-                    print(properties.getProperty("PathToMessages") + "\\" + fileName + " was deleted");
+                    util.print(properties.getProperty("PathToMessages") + "\\" + fileName + " was deleted");
                 } else {
-                    print("File not deleted");
+                    util.print("File not deleted");
                 };
             } else {
                 System.out.println("File not exist");
