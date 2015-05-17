@@ -45,12 +45,14 @@ public class WriteMessages implements Runnable{
             try {
                 file.createNewFile();
             } catch (IOException ex) {
+                ex.printStackTrace();
             }
 
             try (OutputStream os = new FileOutputStream(file);){
                 m.writeTo(os);
                 System.out.println("File " + file.getName() + " was wrote succesfuly");
             } catch (IOException | MessagingException ex) {
+                ex.printStackTrace();
             }
         }
     }

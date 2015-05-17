@@ -33,6 +33,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import util.GetMessages;
 import util.RemoveMessage;
 import util.Utilities;
 import util.WriteMessages;
@@ -730,7 +731,7 @@ public class Morda extends javax.swing.JFrame {
         
         mail.openFolder("INBOX");
         
-        (t = new Thread(new GetMessages())).start();        
+        (t = new Thread(new GetMessages(mail, mesList, lblIn, jTable2))).start();        
         
     }//GEN-LAST:event_btnGetMessagesActionPerformed
 
@@ -770,7 +771,7 @@ public class Morda extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        util.print("Deete button was pressed");
+        util.print("Delete button was pressed");
         DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
         int[] rows = jTable2.getSelectedRows();
         
@@ -1088,50 +1089,7 @@ public class Morda extends javax.swing.JFrame {
 //        }
 //    }
     
-    class GetMessages implements Runnable {
-
-        @Override
-        public void run() {
-
-            Message[] m = mail.getMessages();                                
-            System.out.println("Count of messages " + m.length);
-
-            int count = m.length;
-            int j = 0;
-            while (j <= count && !Thread.interrupted()) {
-                
-                String name = produceFileName(m[j]);
-                if(mesList.add(m[j])) {
-                    System.out.println("Message "+ j +" added succesfuly.");
-                    addDataToTable(m[j]);
-                } else {
-                    System.out.println("Something wrong!!!");
-                };
-                j++;
-            }                              
-        }
-        
-        private void addDataToTable(Message nm) {
-            
-            try {
-                String subject = nm.getSubject();
-                
-                Address[] a = nm.getFrom();
-                String from = a[0].toString();
-                
-                Date d = nm.getSentDate();
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                Object[] obj = {null, subject, from, df.format(d)};
-                model.addRow(obj);
-                
-                lblIn.setText(String.valueOf(model.getRowCount()));
-            } catch (MessagingException ex) {
-                Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
+    
     
     public static String produceFileName(Message message) {
         //<editor-fold defaultstate="collapsed" desc="date">

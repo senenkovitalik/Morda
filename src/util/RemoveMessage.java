@@ -9,6 +9,8 @@ package util;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +20,7 @@ import morda.Morda;
  *
  * @author Vital
  */
-public class RemoveMessage implements Runnable{
+public class RemoveMessage implements Runnable{ // This cass must be rewrited
 
     private int[] rows;
     private List<Message> list;
@@ -39,13 +41,20 @@ public class RemoveMessage implements Runnable{
     @Override
     public void run() {
         int count = rows.length;
+        util.print("Count: " + count);
+        int rowIndex;
+        
         for (int j = count-1; j>=0; j--) {
-            tm.removeRow(j);
-            String fileName = Morda.produceFileName(list.get(j));
+            
+            rowIndex = rows[j];
+            util.print("Row index: " + rowIndex);
+            tm.removeRow(rowIndex);    //problem!!!
+            String fileName = Morda.produceFileName(list.get(rowIndex));
             f = new File(properties.getProperty("PathToMessages") + "\\" + fileName);
             
             if(f.exists()) {
                 System.out.println("File exist");
+                System.gc();
                 if(f.delete()) {
                     util.print(properties.getProperty("PathToMessages") + "\\" + fileName + " was deleted");
                 } else {
@@ -55,7 +64,7 @@ public class RemoveMessage implements Runnable{
                 System.out.println("File not exist");
             }
             
-            list.remove(j);
+            list.remove(rowIndex);
             label.setText(String.valueOf(tm.getRowCount()));
             System.out.println("Row " +rows[j]+ " removed");
         }
