@@ -39,7 +39,7 @@ public class WriteMessages implements Runnable{
 
             Message m = iter.next();
 
-            String name = Morda.produceFileName(m);
+            String name = util.produceFileName(m);
 
             File file = new File(properties.getProperty("PathToMessages") + "//" + name);
             try {

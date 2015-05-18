@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mail.Mail;
 import morda.Morda;
-import static morda.Morda.produceFileName;
 
 /**
  *
@@ -32,6 +31,7 @@ public class GetMessages implements Runnable {
     private final List<Message> mesList;
     private final JLabel lblIn;
     private final JTable table;
+    private Utilities util = new Utilities();
     
     public GetMessages(Mail mail, List<Message> mesList, JLabel lblIn, JTable table) {
         this.mesList = mesList;
@@ -50,7 +50,7 @@ public class GetMessages implements Runnable {
         int j = 0;
         while (j <= count && !Thread.interrupted()) {
 
-            String name = produceFileName(m[j]);
+            String name = util.produceFileName(m[j]);
             if(mesList.add(m[j])) {
                 System.out.println("Message "+ j +" added succesfuly.");
                 addDataToTable(m[j]);

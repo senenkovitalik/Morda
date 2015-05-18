@@ -15,8 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -50,7 +48,8 @@ public class Morda extends javax.swing.JFrame {
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public List<Message> mesList = new CopyOnWriteArrayList<Message>();
+    public List<Message> mesIn = new CopyOnWriteArrayList<Message>();
+    public List<Message> mesOut = new CopyOnWriteArrayList<Message>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
     public Thread t = null;
@@ -106,6 +105,17 @@ public class Morda extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtMessageArchive = new javax.swing.JTextField();
         addressbookFrame = new javax.swing.JFrame();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -377,16 +387,101 @@ public class Morda extends javax.swing.JFrame {
 
         propFrame.getContentPane().add(jPanel9, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout addressbookFrameLayout = new javax.swing.GroupLayout(addressbookFrame.getContentPane());
-        addressbookFrame.getContentPane().setLayout(addressbookFrameLayout);
-        addressbookFrameLayout.setHorizontalGroup(
-            addressbookFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        addressbookFrame.setMinimumSize(new java.awt.Dimension(550, 440));
+        addressbookFrame.setPreferredSize(new java.awt.Dimension(550, 440));
+        addressbookFrame.setResizable(false);
+
+        jPanel10.setMinimumSize(new java.awt.Dimension(483, 347));
+
+        jLabel19.setText("jLabel19");
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Name", "Email"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane5.setViewportView(jTable3);
+
+        jButton3.setText(">>");
+
+        jButton4.setText("<<");
+
+        jScrollPane6.setViewportView(jList1);
+
+        jButton7.setText("jButton7");
+
+        jButton8.setText("jButton8");
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(5, 5, 5))
         );
-        addressbookFrameLayout.setVerticalGroup(
-            addressbookFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5))
         );
+
+        addressbookFrame.getContentPane().add(jPanel10, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mailclient by Vital");
@@ -731,7 +826,7 @@ public class Morda extends javax.swing.JFrame {
         
         mail.openFolder("INBOX");
         
-        (t = new Thread(new GetMessages(mail, mesList, lblIn, jTable2))).start();        
+        (t = new Thread(new GetMessages(mail, mesIn, lblIn, jTable2))).start();        
         
     }//GEN-LAST:event_btnGetMessagesActionPerformed
 
@@ -759,7 +854,7 @@ public class Morda extends javax.swing.JFrame {
                 util.print("Thread is interrupted.");
                 util.copyProperties(saveProp, runProp);
                 writePropToFile(f, saveProp);
-                (new Thread(new WriteMessages(mesList, runProp))).start();
+                (new Thread(new WriteMessages(mesIn, runProp))).start();
             } else {
                 util.print("Thread is not interrupted.");
             }
@@ -767,7 +862,8 @@ public class Morda extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        //frameAddressBook.
+        addressbookFrame.setLocationRelativeTo(morda);
+        addressbookFrame.setVisible(true);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -775,7 +871,7 @@ public class Morda extends javax.swing.JFrame {
         DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
         int[] rows = jTable2.getSelectedRows();
         
-        (new Thread(new RemoveMessage(rows, mesList, lblIn, tm, runProp))).start();
+        (new Thread(new RemoveMessage(rows, mesIn, lblIn, tm, runProp))).start();
         
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -816,8 +912,12 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JComboBox comboSMTPCon;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -828,6 +928,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -836,7 +937,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -847,12 +950,16 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane5;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblIn;
     private javax.swing.JLabel lblMailbox;
@@ -959,8 +1066,8 @@ public class Morda extends javax.swing.JFrame {
                     String from = a[0].toString();
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     
-                    String name = produceFileName(mime);
-                    mesList.add(mime);
+                    String name = util.produceFileName(mime);
+                    mesIn.add(mime);
                     
                     Object[] obj = {null, mime.getSubject(), from, df.format(mime.getSentDate())};
                     model.addRow(obj);
@@ -1091,52 +1198,6 @@ public class Morda extends javax.swing.JFrame {
     
     
     
-    public static String produceFileName(Message message) {
-        //<editor-fold defaultstate="collapsed" desc="date">
-                Date d = null;
-                try {
-                    d = message.getSentDate();
-                } catch (MessagingException ex) {
-                    //Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("Some problems with date");
-                }
-
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(d);
-
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                int hour = cal.get(Calendar.HOUR_OF_DAY);
-                int min = cal.get(Calendar.MINUTE);
-                int sec = cal.get(Calendar.SECOND);
-
-                String smonth, sday, shour, smin, ssec;
-
-                if (month < 10) {
-                    smonth = "0"+String.valueOf(month);
-                } else smonth = String.valueOf(month);
-
-                if (day < 10) {
-                    sday = "0"+String.valueOf(day);
-                } else sday = String.valueOf(day);
-
-                if(hour < 10) {
-                    shour = "0"+String.valueOf(hour);
-                } else shour = String.valueOf(hour);
-
-                if(min < 10) {
-                    smin = "0"+String.valueOf(min);
-                } else smin = String.valueOf(min);
-
-                if(sec < 10) {
-                    ssec = "0"+String.valueOf(sec);
-                } else ssec = String.valueOf(sec);
-                //</editor-fold>
-                    
-        String name = year +"_"+ smonth +"_"+ sday +"_"+ shour +"_"+ smin +"_"+ ssec + ".mes";
-        
-        return name;
-    }
+    
 }
 

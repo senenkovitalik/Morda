@@ -9,8 +9,6 @@ package util;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
@@ -49,7 +47,7 @@ public class RemoveMessage implements Runnable{ // This cass must be rewrited
             rowIndex = rows[j];
             util.print("Row index: " + rowIndex);
             tm.removeRow(rowIndex);    //problem!!!
-            String fileName = Morda.produceFileName(list.get(rowIndex));
+            String fileName = util.produceFileName(list.get(rowIndex));
             f = new File(properties.getProperty("PathToMessages") + "\\" + fileName);
             
             if(f.exists()) {
