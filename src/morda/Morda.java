@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import util.DataBase;
 import util.GetMessages;
 import util.RemoveMessage;
 import util.Utilities;
@@ -42,17 +43,18 @@ import util.WriteMessages;
  */
 public class Morda extends javax.swing.JFrame {
 
-    private static Morda morda = null;
+    private static Morda morda;
     protected Properties startProp = new Properties();
     protected Properties saveProp = new Properties();
     protected Properties runProp = new Properties();
     private File f;
     public Mail mail = new Mail();
-    public List<Message> mesIn = new CopyOnWriteArrayList<Message>();
-    public List<Message> mesOut = new CopyOnWriteArrayList<Message>();
+    public List<Message> mesIn = new CopyOnWriteArrayList<>();
+    public List<Message> mesOut = new CopyOnWriteArrayList<>();
     public Date lastMessageDate = null;
     public Utilities util = new Utilities();
-    public Thread t = null;
+    public Thread t;
+    public DataBase db = new DataBase();
     
     /**
      * Creates new form Morda
@@ -119,6 +121,13 @@ public class Morda extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         lstRecipients = new javax.swing.JList();
         jLabel18 = new javax.swing.JLabel();
+        contact = new javax.swing.JFrame();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        fieldName = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        fieldEmail = new javax.swing.JTextField();
+        addContact = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -390,9 +399,19 @@ public class Morda extends javax.swing.JFrame {
 
         propFrame.getContentPane().add(jPanel9, java.awt.BorderLayout.CENTER);
 
+        addressBook.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addressBook.setTitle("Address book ");
         addressBook.setMinimumSize(new java.awt.Dimension(490, 420));
         addressBook.setPreferredSize(new java.awt.Dimension(490, 420));
         addressBook.setResizable(false);
+        addressBook.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                addressBookWindowClosed(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                addressBookWindowOpened(evt);
+            }
+        });
 
         jPanel10.setMinimumSize(new java.awt.Dimension(500, 420));
         jPanel10.setPreferredSize(new java.awt.Dimension(500, 420));
@@ -434,6 +453,11 @@ public class Morda extends javax.swing.JFrame {
         btnAddContact.setMaximumSize(new java.awt.Dimension(130, 47));
         btnAddContact.setMinimumSize(new java.awt.Dimension(130, 47));
         btnAddContact.setPreferredSize(new java.awt.Dimension(130, 47));
+        btnAddContact.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddContactActionPerformed(evt);
+            }
+        });
 
         btnRemoveContact.setText("Remove Contact");
         btnRemoveContact.setMaximumSize(new java.awt.Dimension(130, 47));
@@ -544,6 +568,62 @@ public class Morda extends javax.swing.JFrame {
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        contact.setTitle("Add new contact");
+        contact.setMinimumSize(new java.awt.Dimension(250, 180));
+        contact.setResizable(false);
+
+        jLabel24.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel24.setText("New Contact");
+
+        jLabel25.setText("Name");
+
+        jLabel26.setText("Email");
+
+        addContact.setText("Add");
+        addContact.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addContactActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout contactLayout = new javax.swing.GroupLayout(contact.getContentPane());
+        contact.getContentPane().setLayout(contactLayout);
+        contactLayout.setHorizontalGroup(
+            contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contactLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(contactLayout.createSequentialGroup()
+                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24)
+                            .addComponent(fieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(addContact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(contactLayout.createSequentialGroup()
+                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(fieldEmail)))
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+        contactLayout.setVerticalGroup(
+            contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contactLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(fieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(contactLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel26)
+                    .addComponent(fieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(addContact)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -909,24 +989,30 @@ public class Morda extends javax.swing.JFrame {
     // та запис дати останнього повідомлення у файл
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         
-        if (t.isAlive()) {
+        
+        if(t != null) {
+            if (t.isAlive()) {
             
-            t.interrupt();
-            
-            if(t.isInterrupted()){
-                util.print("Thread is interrupted.");
-                util.copyProperties(saveProp, runProp);
-                writePropToFile(f, saveProp);
-                (new Thread(new WriteMessages(mesIn, runProp))).start();
-            } else {
-                util.print("Thread is not interrupted.");
+                t.interrupt();
+
+                if(t.isInterrupted()){
+                    util.print("Thread is interrupted.");
+                    util.copyProperties(saveProp, runProp);
+                    writePropToFile(f, saveProp);
+                    (new Thread(new WriteMessages(mesIn, runProp))).start();
+                } else {
+                    util.print("Thread is not interrupted.");
+                }
             }
+        } else {
+            util.print("Нєхуй клацать, блядь!");
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         addressBook.setLocationRelativeTo(morda);
         addressBook.setVisible(true);
+        db.connect();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -937,6 +1023,29 @@ public class Morda extends javax.swing.JFrame {
         (new Thread(new RemoveMessage(rows, mesIn, lblIn, tm, runProp))).start();
         
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddContactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddContactActionPerformed
+        
+        contact.setLocationRelativeTo(this);
+        contact.setVisible(true);
+    }//GEN-LAST:event_btnAddContactActionPerformed
+
+    private void addContactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addContactActionPerformed
+        
+        db.createDB();
+        db.writeRow(fieldName.getText(), fieldEmail.getText());
+        db.readDB();
+        
+        contact.dispose();
+    }//GEN-LAST:event_addContactActionPerformed
+
+    private void addressBookWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_addressBookWindowClosed
+        db.close();
+    }//GEN-LAST:event_addressBookWindowClosed
+
+    private void addressBookWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_addressBookWindowOpened
+        
+    }//GEN-LAST:event_addressBookWindowOpened
 
     /**
      * @param args the command line arguments
@@ -963,6 +1072,7 @@ public class Morda extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addContact;
     private javax.swing.JFrame addressBook;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAddContact;
@@ -977,6 +1087,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JComboBox comboMailServer;
     private javax.swing.JComboBox comboPOPCon;
     private javax.swing.JComboBox comboSMTPCon;
+    private javax.swing.JFrame contact;
+    private javax.swing.JTextField fieldEmail;
+    private javax.swing.JTextField fieldName;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
@@ -994,6 +1107,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
