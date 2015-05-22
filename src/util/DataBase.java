@@ -11,6 +11,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,9 +23,11 @@ import java.util.logging.Logger;
 public class DataBase {
     
     private Connection con;
-    private Statement stmt;
-    private ResultSet rs;
+    public Statement stmt;
+    public ResultSet rs;
     private final Utilities util = new Utilities();
+    public Contact contact;
+    
     
     public Connection connect() {
         try {
@@ -61,6 +65,23 @@ public class DataBase {
         }
     }
     
+    public Contact readRow(String name, String email) {
+        Contact c = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM users WHERE email='"+email+"';");
+            
+            int id = rs.getInt("id");
+            String n = rs.getString("name");
+            String e = rs.getString("email");
+            
+            c = new Contact(id, n, e);
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return c;
+    }
+    
     public void removeRow(int id) {
         try {
             stmt = con.createStatement();
@@ -71,8 +92,11 @@ public class DataBase {
     }
     
     public void readDB() {
+        
+        
         try {
-            rs = stmt.executeQuery("SELECT * FROM users");
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM users;");
             
             while(rs.next())
             {
@@ -89,17 +113,41 @@ public class DataBase {
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+    }
+    
+    public List<Contact> readAllDB() {
+        
+        List<Contact> contactList = new ArrayList<>();
+        
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM users;");
+            
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String  name = rs.getString("name");
+                String  email = rs.getString("email");
+                
+                contact = new Contact(id, name, email);
+                contactList.add(contact);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return contactList;
     }
         
     public void close() {
         try {
-            if(!con.isClosed()) {
+            if(con != null) {
                 con.close();
             }
 
-            if(stmt != null) {
-                stmt.close();
-            }
+//            if(stmt != null && !stmt.isClosed()) {
+//                stmt.close();
+//            }
             
             if(rs != null) {
                 rs.close();

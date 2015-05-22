@@ -12,6 +12,8 @@ import java.util.Enumeration;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -88,4 +90,12 @@ public class Utilities {
         
         return name;
     }
+
+    public void clearTable(JTable table) {
+        int rowCount = table.getRowCount();
+        DefaultTableModel tm = (DefaultTableModel) table.getModel();
+        for(int i = rowCount-1; i>=0; i--) {
+            tm.removeRow(i);
+        }
+    } 
 }

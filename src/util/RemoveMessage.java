@@ -12,7 +12,6 @@ import java.util.Properties;
 import javax.mail.Message;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
-import morda.Morda;
 
 /**
  *
