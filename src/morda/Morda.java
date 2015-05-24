@@ -27,8 +27,10 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListModel;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -51,6 +53,7 @@ public class Morda extends javax.swing.JFrame {
     protected Properties saveProp = new Properties();
     protected Properties runProp = new Properties();
     private File f;
+    private DefaultTableModel model;
     public Mail mail = new Mail();
     public List<Message> mesIn = new CopyOnWriteArrayList<>();
     public List<Message> mesOut = new CopyOnWriteArrayList<>();
@@ -135,7 +138,7 @@ public class Morda extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        btnAddressBook = new javax.swing.JButton();
+        btnShowAddressBook = new javax.swing.JButton();
         btnProperties = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -406,7 +409,6 @@ public class Morda extends javax.swing.JFrame {
         addressBook.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addressBook.setTitle("Address book ");
         addressBook.setMinimumSize(new java.awt.Dimension(490, 420));
-        addressBook.setPreferredSize(new java.awt.Dimension(490, 420));
         addressBook.setResizable(false);
         addressBook.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
@@ -512,6 +514,11 @@ public class Morda extends javax.swing.JFrame {
         btnAdd.setMaximumSize(new java.awt.Dimension(50, 50));
         btnAdd.setMinimumSize(new java.awt.Dimension(50, 50));
         btnAdd.setPreferredSize(new java.awt.Dimension(50, 50));
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnDel.setText("<<");
         btnDel.setMaximumSize(new java.awt.Dimension(50, 50));
@@ -652,11 +659,11 @@ public class Morda extends javax.swing.JFrame {
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/create-32.png"))); // NOI18N
         jButton5.setText("Create");
 
-        btnAddressBook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/AddressBook.png"))); // NOI18N
-        btnAddressBook.setText("Address book");
-        btnAddressBook.addActionListener(new java.awt.event.ActionListener() {
+        btnShowAddressBook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/AddressBook.png"))); // NOI18N
+        btnShowAddressBook.setText("Address book");
+        btnShowAddressBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddressBookActionPerformed(evt);
+                btnShowAddressBookActionPerformed(evt);
             }
         });
 
@@ -685,7 +692,7 @@ public class Morda extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAddressBook)
+                .addComponent(btnShowAddressBook)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProperties)
                 .addGap(74, 74, 74)
@@ -697,7 +704,7 @@ public class Morda extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddressBook, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                    .addComponent(btnShowAddressBook, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGetMessages, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1018,10 +1025,8 @@ public class Morda extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnStopActionPerformed
 
-    private void btnAddressBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddressBookActionPerformed
+    private void btnShowAddressBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAddressBookActionPerformed
         TableColumnModel tcm = tableContacts.getColumnModel();
-        //tcm.getColumn(0).setMinWidth(20);
-        //tcm.getColumn(0).setPreferredWidth(20);
         tcm.getColumn(0).setMaxWidth(20);
         
         addressBook.setLocationRelativeTo(morda);
@@ -1030,7 +1035,7 @@ public class Morda extends javax.swing.JFrame {
         util.clearTable(tableContacts);
         
         db.connect();
-
+        db.createDB();
         contactList = db.readAllDB();
         
         DefaultTableModel model = (DefaultTableModel) tableContacts.getModel();
@@ -1042,7 +1047,7 @@ public class Morda extends javax.swing.JFrame {
             Object[] obj = {c.id, c.name, c.email};
             model.addRow(obj);
         }
-    }//GEN-LAST:event_btnAddressBookActionPerformed
+    }//GEN-LAST:event_btnShowAddressBookActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         util.print("Delete button was pressed");
@@ -1090,12 +1095,34 @@ public class Morda extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tableContacts.getModel();
         int count = rows.length;
         int rowIndex;
+        util.print("count="+count);
         for(int j = count-1; j>=0; j--) {
+            //util.print("j="+j);
             rowIndex = rows[j];
+//            util.print("rowIndex="+rowIndex);
+//            util.print("valueAt="+model.getValueAt(rowIndex, 0));
+            Object id = model.getValueAt(rowIndex, 0);
             model.removeRow(rowIndex);
-            db.removeRow((int) model.getValueAt(rowIndex, 0));
+            db.removeRow((int) id);
+            util.print("Row id="+id+" was removed");
         }
     }//GEN-LAST:event_btnRemoveContactActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        model = (DefaultTableModel) tableContacts.getModel();
+        ListModel listModel = lstRecipients.getModel();
+        int rows[] = tableContacts.getSelectedRows();
+        String recipients;
+        int count = rows.length;
+        int rowIndex;
+        
+        for(int j = 0; j<=count; j++) {
+            rowIndex = rows[j];
+            String name = (String) model.getValueAt(rowIndex, 1);
+            //listModel.addElement(name);
+            
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1127,13 +1154,13 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAddContact;
     private javax.swing.JButton btnAddServer;
-    private javax.swing.JButton btnAddressBook;
     private javax.swing.JButton btnCheckCon;
     private javax.swing.JButton btnDel;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnGetMessages;
     private javax.swing.JButton btnProperties;
     private javax.swing.JButton btnRemoveContact;
+    private javax.swing.JButton btnShowAddressBook;
     private javax.swing.JButton btnStop;
     private javax.swing.JComboBox comboMailServer;
     private javax.swing.JComboBox comboPOPCon;

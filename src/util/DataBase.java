@@ -36,7 +36,9 @@ public class DataBase {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            con = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Vital\\Desktop\\db.sqlite");
+            String pathToDb_1 = "C:\\Users\\man\\Desktop\\db.sqlite";
+            String pathToDb_2 = "C:\\Users\\Vital\\Desktop\\db.sqlite";
+            con = DriverManager.getConnection("jdbc:sqlite:"+pathToDb_1);
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
