@@ -524,6 +524,11 @@ public class Morda extends javax.swing.JFrame {
         btnDel.setMaximumSize(new java.awt.Dimension(50, 50));
         btnDel.setMinimumSize(new java.awt.Dimension(50, 50));
         btnDel.setPreferredSize(new java.awt.Dimension(50, 50));
+        btnDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -542,6 +547,8 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        lstRecipients.setModel(new DefaultListModel<String>()
+        );
         jScrollPane4.setViewportView(lstRecipients);
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -1087,7 +1094,7 @@ public class Morda extends javax.swing.JFrame {
     }//GEN-LAST:event_addressBookWindowClosed
 
     private void addressBookWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_addressBookWindowOpened
-        
+        //nameList.clear();
     }//GEN-LAST:event_addressBookWindowOpened
 
     private void btnRemoveContactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveContactActionPerformed
@@ -1097,10 +1104,7 @@ public class Morda extends javax.swing.JFrame {
         int rowIndex;
         util.print("count="+count);
         for(int j = count-1; j>=0; j--) {
-            //util.print("j="+j);
             rowIndex = rows[j];
-//            util.print("rowIndex="+rowIndex);
-//            util.print("valueAt="+model.getValueAt(rowIndex, 0));
             Object id = model.getValueAt(rowIndex, 0);
             model.removeRow(rowIndex);
             db.removeRow((int) id);
@@ -1108,21 +1112,50 @@ public class Morda extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRemoveContactActionPerformed
 
+    /*
+    Додаємо отримувачів до JList. При цьому перевіряємо щоб отримувачі не повторювалися.
+    */
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         model = (DefaultTableModel) tableContacts.getModel();
-        ListModel listModel = lstRecipients.getModel();
+        DefaultListModel listModel = (DefaultListModel) lstRecipients.getModel();
         int rows[] = tableContacts.getSelectedRows();
         String recipients;
         int count = rows.length;
         int rowIndex;
         
-        for(int j = 0; j<=count; j++) {
+        List<String> alreadyAdded = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
+        
+        for(int i = 0; i<lstRecipients.getModel().getSize(); i++) {
+            alreadyAdded.add((String)lstRecipients.getModel().getElementAt(i));
+        }
+        
+        for(int j = count-1; j>=0; j--) {
             rowIndex = rows[j];
             String name = (String) model.getValueAt(rowIndex, 1);
-            //listModel.addElement(name);
-            
+            nameList.add(name);
         }
+        
+        nameList = util.duplicateItems(alreadyAdded, nameList);
+        listModel.removeAllElements();
+        Iterator<String> iter = nameList.iterator();
+        while(iter.hasNext()) {
+            String next = iter.next();
+            listModel.addElement(next);
+        }
+        tableContacts.clearSelection();
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
+        DefaultListModel listModel = (DefaultListModel) lstRecipients.getModel();
+        List<String> listToRemove = lstRecipients.getSelectedValuesList();
+        Iterator<String> iter = listToRemove.iterator();
+        while(iter.hasNext()) {
+            String next = iter.next();
+            listModel.removeElement(next);
+        }
+        lstRecipients.clearSelection();;
+    }//GEN-LAST:event_btnDelActionPerformed
 
     /**
      * @param args the command line arguments

@@ -6,14 +6,18 @@
 
 package util;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import morda.Morda;
 
 /**
  *
@@ -98,4 +102,17 @@ public class Utilities {
             tm.removeRow(i);
         }
     } 
+    
+    public List<String> duplicateItems(List<String> alreadyAdded, List<String> notAddedYet) {
+        int sizeAlready = alreadyAdded.size();
+        int sizeNotAdded = notAddedYet.size();
+        
+        for (int i = 0; i < sizeNotAdded; i++) {
+            if(!alreadyAdded.contains(notAddedYet.get(i))) {
+                alreadyAdded.add(notAddedYet.get(i));
+            }
+        }
+                
+        return alreadyAdded;
+    }
 }
