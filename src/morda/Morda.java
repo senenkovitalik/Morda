@@ -135,6 +135,19 @@ public class Morda extends javax.swing.JFrame {
         jLabel26 = new javax.swing.JLabel();
         fieldEmail = new javax.swing.JTextField();
         addContact = new javax.swing.JButton();
+        frameCreateMessage = new javax.swing.JFrame();
+        jPanel13 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        fieldFrom = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        fieldSubject = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        fieldRecipients = new javax.swing.JTextField();
+        jPanel15 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        paneMessageBody = new javax.swing.JEditorPane();
+        btnSend = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -649,6 +662,111 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
+        frameCreateMessage.setTitle("New Message");
+        frameCreateMessage.setMinimumSize(new java.awt.Dimension(700, 520));
+        frameCreateMessage.setPreferredSize(new java.awt.Dimension(700, 500));
+
+        jLabel20.setText("From");
+
+        jLabel21.setText("Subject");
+
+        jLabel22.setText("Recipients");
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(fieldFrom)
+                    .addComponent(fieldSubject)
+                    .addComponent(fieldRecipients, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(fieldFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(fieldSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(fieldRecipients, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        paneMessageBody.setContentType("text/html"); // NOI18N
+        paneMessageBody.setToolTipText("");
+        jScrollPane5.setViewportView(paneMessageBody);
+
+        btnSend.setText("Send");
+        btnSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 682, Short.MAX_VALUE)
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(btnSend)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout frameCreateMessageLayout = new javax.swing.GroupLayout(frameCreateMessage.getContentPane());
+        frameCreateMessage.getContentPane().setLayout(frameCreateMessageLayout);
+        frameCreateMessageLayout.setHorizontalGroup(
+            frameCreateMessageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        frameCreateMessageLayout.setVerticalGroup(
+            frameCreateMessageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mailclient by Vital");
         setMinimumSize(new java.awt.Dimension(100, 100));
@@ -665,6 +783,11 @@ public class Morda extends javax.swing.JFrame {
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/create-32.png"))); // NOI18N
         jButton5.setText("Create");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         btnShowAddressBook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/AddressBook.png"))); // NOI18N
         btnShowAddressBook.setText("Address book");
@@ -1157,6 +1280,31 @@ public class Morda extends javax.swing.JFrame {
         lstRecipients.clearSelection();;
     }//GEN-LAST:event_btnDelActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        frameCreateMessage.setLocationRelativeTo(this);
+        frameCreateMessage.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        String from = fieldFrom.getText();
+        String to = fieldRecipients.getText();
+        String host = runProp.getProperty("SMTPServer");
+        String subject = fieldSubject.getText();
+        String text = paneMessageBody.getText();
+        String connectionType = runProp.getProperty("SMTPConnectionType");
+        
+        switch (connectionType) {
+            case "Pure" : mail.send(from, to, host, subject, text);
+                          return;
+            case "SSL"  : mail.sendWithSSL(from, to, host, subject, text);
+                          return;
+            case "TLS"  : mail.sendWithTLS(from, to, host, subject, text);
+                          return;
+        }
+        
+        frameCreateMessage.dispose();
+    }//GEN-LAST:event_btnSendActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1193,6 +1341,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JButton btnGetMessages;
     private javax.swing.JButton btnProperties;
     private javax.swing.JButton btnRemoveContact;
+    private javax.swing.JButton btnSend;
     private javax.swing.JButton btnShowAddressBook;
     private javax.swing.JButton btnStop;
     private javax.swing.JComboBox comboMailServer;
@@ -1200,7 +1349,11 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JComboBox comboSMTPCon;
     private javax.swing.JFrame contact;
     private javax.swing.JTextField fieldEmail;
+    private javax.swing.JTextField fieldFrom;
     private javax.swing.JTextField fieldName;
+    private javax.swing.JTextField fieldRecipients;
+    private javax.swing.JTextField fieldSubject;
+    private javax.swing.JFrame frameCreateMessage;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
@@ -1217,6 +1370,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
@@ -1231,6 +1387,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1243,6 +1402,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
@@ -1255,6 +1415,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel lblOut;
     private javax.swing.JLabel lblSubject;
     private javax.swing.JList lstRecipients;
+    private javax.swing.JEditorPane paneMessageBody;
     private javax.swing.JEditorPane paneShowMessage;
     private javax.swing.JPanel panelCon;
     private javax.swing.JPanel panelPath;

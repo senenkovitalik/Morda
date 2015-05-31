@@ -9,10 +9,12 @@ import com.sun.mail.pop3.POP3SSLStore;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Authenticator;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
@@ -139,11 +141,51 @@ public class Mail {
             message.setSubject(subject);
             message.setText(text);
             Transport.send(message, login, password);
-            System.out.println("Sent message succesfuly...");
+            System.out.println("Sent message succesfuly");
         } catch(MessagingException ex) {
             ex.printStackTrace();
         }
         
+    }
+    
+    public void sendWithSSL(String from, String to, String host, String subject, String text) {
+        Properties prp =  System.getProperties();
+        prp.put("mail.transport.protocol", "smtp");
+        prp.put("mail.smtp.host", host);
+        prp.put("mail.smtp.port", "465");
+        prp.put("mail.smtp.auth", "true");
+//        prp.put("mail.smtp.user", "senenkovitalik");
+//        prp.put("mail.smtp.password", "23111990!");
+        prp.put("mail.smtp.socketFactory.port", "465");
+        prp.put("mail.smtp.socketFactory.class", "java.net.ssl.SSLSocketFactory");
+        prp.put("mail.debug", "true");
+        
+        String l,p;
+        l = "senenkovitalik";
+        p = "23111990!";
+        
+        System.out.println(l +" "+ p);
+        
+//        Authenticator auth = new Authenticator() {
+//            @Override
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication(l, p);
+//            }
+//        };
+        
+        Session ses = Session.getInstance(prp);
+        
+        try {
+            MimeMessage message = new MimeMessage(ses);
+            message.setFrom(new InternetAddress(from));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject(subject);
+            message.setText(text);
+            Transport.send(message, l, p);
+            System.out.println("Sent message succesfuly");
+        } catch(MessagingException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public void sendWithTLS(String from, String to, String host, String subject, String text) {
