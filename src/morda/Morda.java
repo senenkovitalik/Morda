@@ -35,6 +35,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import mail.Mail;
+import mail.SendMessage;
 import util.Contact;
 import util.DataBase;
 import util.GetMessages;
@@ -150,7 +151,7 @@ public class Morda extends javax.swing.JFrame {
         btnSend = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnCreateMessage = new javax.swing.JButton();
         btnShowAddressBook = new javax.swing.JButton();
         btnProperties = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
@@ -662,9 +663,15 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
+        frameCreateMessage.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         frameCreateMessage.setTitle("New Message");
-        frameCreateMessage.setMinimumSize(new java.awt.Dimension(700, 520));
-        frameCreateMessage.setPreferredSize(new java.awt.Dimension(700, 500));
+        frameCreateMessage.setMinimumSize(new java.awt.Dimension(700, 540));
+        frameCreateMessage.setPreferredSize(new java.awt.Dimension(700, 540));
+        frameCreateMessage.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frameCreateMessageWindowOpened(evt);
+            }
+        });
 
         jLabel20.setText("From");
 
@@ -707,7 +714,6 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        paneMessageBody.setContentType("text/html"); // NOI18N
         paneMessageBody.setToolTipText("");
         jScrollPane5.setViewportView(paneMessageBody);
 
@@ -736,7 +742,7 @@ public class Morda extends javax.swing.JFrame {
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSend)
                 .addContainerGap())
         );
@@ -781,11 +787,11 @@ public class Morda extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/create-32.png"))); // NOI18N
-        jButton5.setText("Create");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnCreateMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/create-32.png"))); // NOI18N
+        btnCreateMessage.setText("Create");
+        btnCreateMessage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnCreateMessageActionPerformed(evt);
             }
         });
 
@@ -820,7 +826,7 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(btnGetMessages)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCreateMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnShowAddressBook)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -835,7 +841,7 @@ public class Morda extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnShowAddressBook, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCreateMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGetMessages, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1280,12 +1286,16 @@ public class Morda extends javax.swing.JFrame {
         lstRecipients.clearSelection();;
     }//GEN-LAST:event_btnDelActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    /*
+    Показуємо вікно створення повідомлення.
+    */
+    private void btnCreateMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateMessageActionPerformed
         frameCreateMessage.setLocationRelativeTo(this);
         frameCreateMessage.setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnCreateMessageActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+   
         String from = fieldFrom.getText();
         String to = fieldRecipients.getText();
         String host = runProp.getProperty("SMTPServer");
@@ -1293,17 +1303,18 @@ public class Morda extends javax.swing.JFrame {
         String text = paneMessageBody.getText();
         String connectionType = runProp.getProperty("SMTPConnectionType");
         
-        switch (connectionType) {
-            case "Pure" : mail.send(from, to, host, subject, text);
-                          return;
-            case "SSL"  : mail.sendWithSSL(from, to, host, subject, text);
-                          return;
-            case "TLS"  : mail.sendWithTLS(from, to, host, subject, text);
-                          return;
-        }
+        (new Thread(new SendMessage(connectionType, host, runProp.getProperty("login"), runProp.getProperty("password"), from, to, subject, text))).start();
         
         frameCreateMessage.dispose();
+        frameCreateMessage.setVisible(false);
     }//GEN-LAST:event_btnSendActionPerformed
+    
+    /*
+    При відкритті вікна Create в полі From ьуде прописана поточна адреса
+    */
+    private void frameCreateMessageWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frameCreateMessageWindowOpened
+        fieldFrom.setText(runProp.getProperty("login")+"@"+runProp.getProperty("mailserver"));
+    }//GEN-LAST:event_frameCreateMessageWindowOpened
 
     /**
      * @param args the command line arguments
@@ -1336,6 +1347,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JButton btnAddContact;
     private javax.swing.JButton btnAddServer;
     private javax.swing.JButton btnCheckCon;
+    private javax.swing.JButton btnCreateMessage;
     private javax.swing.JButton btnDel;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnGetMessages;
@@ -1356,7 +1368,6 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JFrame frameCreateMessage;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

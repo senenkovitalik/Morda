@@ -1,11 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package util;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,7 +25,10 @@ public class DataBase {
     private final Utilities util = new Utilities();
     public Contact contact;
     
-    
+    /*
+    Перевіряємо чи існує файл БД. Якщо так, то підключпємося до нбого.
+    Якщо ні, то створюємо його.
+    */
     public Connection connect() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -36,16 +36,28 @@ public class DataBase {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            String pathToDb_1 = "C:\\Users\\man\\Desktop\\db.sqlite";
-            String pathToDb_2 = "C:\\Users\\Vital\\Desktop\\db.sqlite";
-            con = DriverManager.getConnection("jdbc:sqlite:"+pathToDb_1);
+            String home = System.getProperty("user.home");
+            String pathToDB = home+"\\Desktop\\db.sqlite";
+            
+            File f = new File(pathToDB);
+            if(!f.exists()) {
+                f.createNewFile();
+            }
+            util.print(pathToDB);
+            
+            con = DriverManager.getConnection("jdbc:sqlite:"+pathToDB);
         } catch (SQLException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("Database is connected");
         return con;
     }
     
+    /*
+    Якщо таблиця у БД ще не створена, то створюємо її.
+    */
     public void createDB() {
         try {
             stmt = con.createStatement();
@@ -53,11 +65,15 @@ public class DataBase {
                     + "('id' INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + " 'name' text,"
                     + " 'email' INT);");
+            util.print("DB is created.");
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    /*
+    Запису\мо рядок у таблицю.
+    */
     public void writeRow(String name, String email) {
         try {
             stmt.execute("INSERT INTO 'users' ('name', 'email') VALUES ('"+name+"', '"+email+"'); ");
@@ -67,6 +83,9 @@ public class DataBase {
         }
     }
     
+    /*
+    Зчитуємо рядок з БД та повертаємо його як обєкт Contact
+    */
     public Contact readRow(String name, String email) {
         Contact c = null;
         try {
@@ -84,6 +103,9 @@ public class DataBase {
         return c;
     }
     
+    /*
+    Видаляємо рядок з таблиці.
+    */
     public void removeRow(int id) {
         try {
             stmt = con.createStatement();
@@ -93,6 +115,9 @@ public class DataBase {
         }
     }
     
+    /*
+    Зчитуємо та виводимо всю таблицю.
+    */
     public void readDB() {
         
         
@@ -118,6 +143,9 @@ public class DataBase {
         
     }
     
+    /*
+    Зчитуємо та повертаємо всю таблицю у вигляді List<Contact>.
+    */
     public List<Contact> readAllDB() {
         
         List<Contact> contactList = new ArrayList<>();
@@ -141,16 +169,15 @@ public class DataBase {
         return contactList;
     }
         
+    /*
+    Закриваємо підключення до БД.
+    */
     public void close() {
         try {
             if(con != null) {
                 con.close();
             }
 
-//            if(stmt != null && !stmt.isClosed()) {
-//                stmt.close();
-//            }
-            
             if(rs != null) {
                 rs.close();
             }
