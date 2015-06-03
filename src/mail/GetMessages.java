@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package util;
+package mail;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mail.Mail;
 import morda.Morda;
+import util.Utilities;
 
 /**
  *
@@ -31,7 +32,7 @@ public class GetMessages implements Runnable {
     private final List<Message> mesList;
     private final JLabel lblIn;
     private final JTable table;
-    private Utilities util = new Utilities();
+    private final Utilities util = new Utilities();
     
     public GetMessages(Mail mail, List<Message> mesList, JLabel lblIn, JTable table) {
         this.mesList = mesList;

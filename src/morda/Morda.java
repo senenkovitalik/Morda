@@ -38,7 +38,7 @@ import mail.Mail;
 import mail.SendMessage;
 import util.Contact;
 import util.DataBase;
-import util.GetMessages;
+import mail.GetMessages;
 import util.RemoveMessage;
 import util.Utilities;
 import util.WriteMessages;
@@ -203,7 +203,6 @@ public class Morda extends javax.swing.JFrame {
         jLabel8.setText("Server");
 
         comboMailServer.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        comboMailServer.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "gmail.com", "rambler.ru", "mail.ru", "i.ua" }));
         comboMailServer.setToolTipText("Choose the server that you use");
 
         btnAddServer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Add.png"))); // NOI18N
@@ -666,7 +665,6 @@ public class Morda extends javax.swing.JFrame {
         frameCreateMessage.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         frameCreateMessage.setTitle("New Message");
         frameCreateMessage.setMinimumSize(new java.awt.Dimension(700, 540));
-        frameCreateMessage.setPreferredSize(new java.awt.Dimension(700, 540));
         frameCreateMessage.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 frameCreateMessageWindowOpened(evt);

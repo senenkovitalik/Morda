@@ -23,7 +23,14 @@ import javax.mail.internet.MimeMessage;
  */
 public class SendMessage implements Runnable{
 
-    private String conType, host, login, password, from, to, subject, text;
+    private final String conType;
+    private final String host;
+    private final String login;
+    private final String password;
+    private final String from;
+    private final String to;
+    private final String subject;
+    private final String text;
     
     public SendMessage(String conType, String host, String login, String password, String from, String to, String subject, String text) {
         this.conType = conType;
@@ -53,7 +60,12 @@ public class SendMessage implements Runnable{
         Properties prp =  System.getProperties();
         prp.setProperty("mail.smtp.host", host);
         
-        Session ses = Session.getDefaultInstance(prp);
+        Session ses = Session.getInstance(prp,
+            new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(login, password);
+                }
+        });
         
         try {
             MimeMessage message = new MimeMessage(ses);
@@ -105,7 +117,13 @@ public class SendMessage implements Runnable{
         prp.put("mail.smtp.host", host);
         prp.put("mail.smtp.port", "587");
         
-        Session ses = Session.getDefaultInstance(prp);
+        Session ses = Session.getInstance(prp,
+            new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(login, password);
+                }
+        });
         
         try {
             MimeMessage message = new MimeMessage(ses);
@@ -114,7 +132,7 @@ public class SendMessage implements Runnable{
             message.setSubject(subject);
             message.setText(text);
             
-            Transport.send(message, login, password);
+            Transport.send(message);
             System.out.println("Sent message succesfuly...");
         } catch(MessagingException ex) {
             ex.printStackTrace();
