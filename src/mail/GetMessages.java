@@ -28,8 +28,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import morda.Morda;
 import util.Utilities;
-import util.WriteMessages;
-
 /**
  *
  * @author Vital
@@ -59,7 +57,7 @@ public class GetMessages implements Runnable {
 
         int count = m.length;
         int j = 0;
-        while (j < count || !Thread.interrupted()) {
+        while (j < count && !Thread.interrupted()) {
             
             if(j == count) {
                 break;
@@ -78,7 +76,6 @@ public class GetMessages implements Runnable {
             };
             j++;
         } 
-        (new Thread(new WriteMessages(mesList, prop))).start();
     }
 
     /*

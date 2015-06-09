@@ -6,6 +6,7 @@
 
 package morda;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.BufferedOutputStream;
@@ -16,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,11 +35,14 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
 import javax.swing.DefaultListModel;
+import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -1531,22 +1536,20 @@ public class Morda extends javax.swing.JFrame {
             if(dir.listFiles() != null) {
                 
                 for (File file : dir.listFiles()) {
-                    if(file.getName().endsWith("mes")) {
-                        
-                        FileInputStream fis = new FileInputStream(file);
-                        MimeMessage mime = new MimeMessage(null, fis);
-                        Address[] a = mime.getFrom();
-                        String from = a[0].toString();
-                        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    
+                    FileInputStream fis = new FileInputStream(file);
+                    MimeMessage mime = new MimeMessage(null, fis);
+                    Address[] a = mime.getFrom();
+                    String from = a[0].toString();
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-                        String name = util.produceFileName(mime);
-                        mesIn.add(mime);
+                    String name = util.produceFileName(mime);
+                    mesIn.add(mime);
 
-                        Object[] obj = {null, mime.getSubject(), from, df.format(mime.getSentDate())};
-                        model.addRow(obj);
+                    Object[] obj = {null, mime.getSubject(), from, df.format(mime.getSentDate())};
+                    model.addRow(obj);
 
-                        lblIn.setText(String.valueOf(model.getRowCount()));
-                    }
+                    lblIn.setText(String.valueOf(model.getRowCount()));
                 }   
             } else System.err.println("Sorry. Archive is empty :-(");
         } else {
@@ -1665,9 +1668,9 @@ public class Morda extends javax.swing.JFrame {
         }
         
         public void writePart(Part p) throws Exception {
-        if (p instanceof Message)
+        //if (p instanceof Message)
              //Call methos writeEnvelope
-            writeEnvelope((Message) p);
+            //writeEnvelope((Message) p);
 
         System.out.println("----------------------------");
         System.out.println("CONTENT-TYPE: " + p.getContentType());
@@ -1677,6 +1680,8 @@ public class Morda extends javax.swing.JFrame {
             System.out.println("This is plain text");
             System.out.println("---------------------------");
             System.out.println((String) p.getContent());
+            paneShowMessage.setContentType("text/plain");
+            paneShowMessage.setText((String) p.getContent());
         } 
         //check if the content has attachment
         else if (p.isMimeType("multipart/*")) {
@@ -1732,7 +1737,26 @@ public class Morda extends javax.swing.JFrame {
                 System.out.println("---------------------------");
                 System.out.println((String) o);
                 paneShowMessage.setContentType("text/html");
+                paneShowMessage.setEditable(false);
+                paneShowMessage.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
                 paneShowMessage.setText((String) o);
+                paneShowMessage.addHyperlinkListener(new HyperlinkListener() {
+
+                    @Override
+                    public void hyperlinkUpdate(HyperlinkEvent he) {
+                        if(he.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                            if(Desktop.isDesktopSupported()) {
+                                try {
+                                    Desktop.getDesktop().browse(he.getURL().toURI());
+                                } catch (URISyntaxException ex) {
+                                    Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    }
+                });
             } 
             else if (o instanceof InputStream) {
                 System.out.println("This is just an input stream");
