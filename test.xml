@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <settings>
-	<server name="rambler.ru">
-		<login>senenkovitalik</login>
+
+	<server name="i.ua">
 		<password>23111990!</password>
-		<con_type>SSL</con_type>
+		<con_type>STARTTLS</con_type>
 		<smtp_server>smtp.rambler.ru</smtp_server>
 		<smtp_port>465</smtp_port>
 		<pop_server>pop.rambler.ru</pop_server>
 		<pop_port>995</pop_port>
+		<cool_element>fuck</cool_element>
 	</server>
+	
 	<server name="google.com">
 		<login>senenkovitalik</login>
 		<password>23111990!</password>
@@ -18,7 +20,9 @@
 		<pop_server>pop.google.com</pop_server>
 		<pop_port>995</pop_port>
 	</server>
+	
 	<message_archive>
 		<path>C:\Users\Vital\Desktop\archive</path>
 	</message_archive>
+	
 </settings>

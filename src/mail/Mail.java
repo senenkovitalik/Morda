@@ -23,8 +23,7 @@ import javax.mail.URLName;
  */
 public class Mail {
     
-        
-    private String login = "senenkovitalik", password = "23111990!";
+    private String login, password;
     private Session session = null;
     private Store store = null;
     private Folder folder;
@@ -56,6 +55,8 @@ public class Mail {
     
     public void connectWithSSL(String server, String port) {
         
+        System.out.println("Try to connect to "+server+", port "+port+"...");
+        
         String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         
         Properties pop3Props = new Properties();
@@ -69,6 +70,7 @@ public class Mail {
         
         session = Session.getInstance(pop3Props, null);
         store = new POP3SSLStore(session, url);
+        System.out.println(login+" "+password);
         try {
             store.connect();
         } catch (MessagingException ex) {
