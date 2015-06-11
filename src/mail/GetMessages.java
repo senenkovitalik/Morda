@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Address;
+import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -56,26 +57,14 @@ public class GetMessages implements Runnable {
         System.out.println("Count of messages " + m.length);
 
         int count = m.length;
-        int j = 0;
-        while (j < count && !Thread.interrupted()) {
-            
-            if(j == count) {
-                break;
-            }
-            
-            try {
-                //writePart(m[j]);
-            } catch (Exception ex) {
-                Logger.getLogger(GetMessages.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if(mesList.add(m[j])) {
-                System.out.println("Message "+ j +" added succesfuly.");
-                addDataToTable(m[j]);
-            } else {
-                System.out.println("Something wrong!!!");
-            };
-            j++;
-        } 
+        for(int j = 0; j < count; j++) {
+            if(!Thread.interrupted()) {
+                if(mesList.add(m[j])) {
+                    System.out.println("Message "+ j +" added succesfuly.");
+                    addDataToTable(m[j]);
+                } else System.out.println("Something wrong!!!");
+            } else break;
+        }
     }
 
     /*
