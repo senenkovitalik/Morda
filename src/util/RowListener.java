@@ -30,7 +30,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import static mail.GetMessages.writeEnvelope;
 import morda.Morda;
 
 /**
@@ -70,7 +69,7 @@ public class RowListener implements ListSelectionListener {
 
                 int row = table.getSelectedRow();
 
-                System.out.println("Working");
+                System.out.println("Try to show message.");
 
                 String contentType = null, from = null, subject = null;
 
@@ -107,25 +106,25 @@ public class RowListener implements ListSelectionListener {
     }
 
     public void writePart(Part p) throws Exception {
-    if (p instanceof Message)
-        // Call methos writeEnvelope
-        writeEnvelope((Message) p);
-
-    System.out.println("----------------------------");
-    System.out.println("CONTENT-TYPE: " + p.getContentType());
+//    if (p instanceof Message)
+//        // Call methos writeEnvelope
+//        writeEnvelope((Message) p);
+//
+//    System.out.println("----------------------------");
+//    System.out.println("CONTENT-TYPE: " + p.getContentType());
 
     //check if the content is plain text
     if (p.isMimeType("text/plain")) {
-        System.out.println("This is plain text");
-        System.out.println("---------------------------");
-        System.out.println((String) p.getContent());
+//        System.out.println("This is plain text");
+//        System.out.println("---------------------------");
+//        System.out.println((String) p.getContent());
         pane.setContentType("text/plain");
         pane.setText((String) p.getContent());
     } 
     //check if the content has attachment
     else if (p.isMimeType("multipart/*")) {
-        System.out.println("This is a Multipart");
-        System.out.println("---------------------------");
+//        System.out.println("This is a Multipart");
+//        System.out.println("---------------------------");
         Multipart mp = (Multipart) p.getContent();
         int count = mp.getCount();
         for (int i = 0; i < count; i++)
@@ -133,18 +132,18 @@ public class RowListener implements ListSelectionListener {
     } 
     //check if the content is a nested message
     else if (p.isMimeType("message/rfc822")) {
-        System.out.println("This is a Nested Message");
-        System.out.println("---------------------------");
+//        System.out.println("This is a Nested Message");
+//        System.out.println("---------------------------");
         writePart((Part) p.getContent());
     } 
     //check if the content is an inline image
     else if (p.isMimeType("image/jpeg")) {
-        System.out.println("--------> image/jpeg");
+        //System.out.println("--------> image/jpeg");
         Object o = p.getContent();
 
         InputStream x = (InputStream) o;
         // Construct the required byte array
-        System.out.println("x.length = " + x.available());
+        //System.out.println("x.length = " + x.available());
         int i = 0;
         byte[] bArray = null;
         while ((i = ((InputStream) x).available()) > 0) {
@@ -155,12 +154,12 @@ public class RowListener implements ListSelectionListener {
 
             break;
         }
-        FileOutputStream f2 = new FileOutputStream("C:\\Users\\man\\Desktop\\archive\\image.jpg");
+        FileOutputStream f2 = new FileOutputStream("C:\\Users\\vital\\Desktop\\archive\\image.jpg");
         f2.write(bArray);
     } 
     else if (p.getContentType().contains("image/")) {
-        System.out.println("content type " + p.getContentType());
-        File f = new File("C:\\Users\\man\\Desktop\\archive\\" + p.getFileName());
+        //System.out.println("content type " + p.getContentType());
+        File f = new File("C:\\Users\\Vital\\Desktop\\archive\\" + p.getFileName());
         DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
         com.sun.mail.util.BASE64DecoderStream test = (com.sun.mail.util.BASE64DecoderStream) p.getContent();
         byte[] buffer = new byte[1024];
@@ -172,10 +171,9 @@ public class RowListener implements ListSelectionListener {
     else {
         Object o = p.getContent();
         if (o instanceof String) {
-            System.out.println("This is a string");
-            System.out.println("---------------------------");
-            System.out.println((String) o);
-            pane.setEditable(false);
+//            System.out.println("This is a string");
+//            System.out.println("---------------------------");
+//            System.out.println((String) o);
             pane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
             pane.setText((String) o);
             pane.addHyperlinkListener(new HyperlinkListener() {
@@ -185,7 +183,7 @@ public class RowListener implements ListSelectionListener {
                     if(he.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                         if(Desktop.isDesktopSupported()) {
                             try {
-                                System.out.println("Hyperlink activated");
+                                System.out.println("Go to " + he.getURL().toURI());
                                 Desktop.getDesktop().browse(he.getURL().toURI());
                             } catch (URISyntaxException | IOException ex) {
                                 Logger.getLogger(Morda.class.getName()).log(Level.SEVERE, null, ex);
@@ -196,8 +194,8 @@ public class RowListener implements ListSelectionListener {
             });
         } 
         else if (o instanceof InputStream) {
-            System.out.println("This is just an input stream");
-            System.out.println("---------------------------");
+//            System.out.println("This is just an input stream");
+//            System.out.println("---------------------------");
             InputStream is = (InputStream) o;
             is = (InputStream) o;
             int c;
@@ -205,9 +203,10 @@ public class RowListener implements ListSelectionListener {
                 System.out.write(c);
         } 
         else {
-            System.out.println("This is an unknown type");
-            System.out.println("---------------------------");
-            System.out.println(o.toString());
+//            System.out.println("This is an unknown type");
+//            System.out.println("---------------------------");
+            //System.out.println(o.toString());
+            pane.setText(o.toString());
         }
     }
 }
