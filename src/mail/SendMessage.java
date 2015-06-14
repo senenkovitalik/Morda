@@ -62,6 +62,7 @@ public class SendMessage implements Runnable{
         
         Session ses = Session.getInstance(prp,
             new javax.mail.Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(login, password);
                 }

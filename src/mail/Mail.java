@@ -81,7 +81,6 @@ public class Mail {
     public void openFolder(String folderName) {
         
         try {
-
             folder = store.getDefaultFolder();
             folder = folder.getFolder(folderName);
             
@@ -116,9 +115,10 @@ public class Mail {
         return k;
     }
     
-    public void closeFolder() {
+    public void closeFolderStore() {
         try {
             folder.close(false);
+            store.close();
         } catch (MessagingException ex) {
             Logger.getLogger(Mail.class.getName()).log(Level.SEVERE, null, ex);
         }

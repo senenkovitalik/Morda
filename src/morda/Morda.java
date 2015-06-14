@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1103,24 +1104,15 @@ public class Morda extends javax.swing.JFrame {
     // Визначення параметрів підключення
     // Запуск процесу зчитування повідомлень
     private void btnGetMessagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetMessagesActionPerformed
-        
+        // NTBR
+        // do not run proces if it already run
         mail.setUserPass(runProp.getProperty("login"), runProp.getProperty("password"));
         
         String c = runProp.getProperty("POPConnectionType");
         String server = runProp.getProperty("POPServer");
         String port = runProp.getProperty("POPPort");
-        
-        switch (c) {
-            case "Pure" :   mail.connect(server, port);
-                            break;
-            case "SSL" :    mail.connectWithSSL(server, port);
-                            break;
-            case "TLS" :    break;
-        }
-        
-        mail.openFolder("INBOX");
-        
-        (t = new Thread(new GetMessages(mail, mesIn, lblIn, jTable2, runProp))).start();     
+        t = new Thread(new GetMessages(c, mail, server, port, mesIn, lblIn, jTable2, runProp));
+        t.start();
     }//GEN-LAST:event_btnGetMessagesActionPerformed
 
     // Можна додати новий поштовий сервер у випадаючий список
@@ -1521,7 +1513,22 @@ public class Morda extends javax.swing.JFrame {
             
             if(dir.listFiles() != null) {
                 
-                for (File file : dir.listFiles()) {
+                FilenameFilter fnf = new FilenameFilter() {
+
+                    @Override
+                    public boolean accept(File file, String name) {
+                        if(name.lastIndexOf(".") > 0) {
+                            int lastIndex = name.lastIndexOf(".");
+                            String str = name.substring(lastIndex);
+                            if(str.equals(".mes")) {
+                                return true;
+                            }
+                        } 
+                        return false;
+                    }
+                };
+                
+                for (File file : dir.listFiles(fnf)) {
                     
                     FileInputStream fis = new FileInputStream(file);
                     MimeMessage mime = new MimeMessage(null, fis);
