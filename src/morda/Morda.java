@@ -34,6 +34,7 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import mail.GetMessages;
 import mail.Mail;
 import mail.SendMessage;
@@ -150,6 +151,10 @@ public class Morda extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         paneMessageBody = new javax.swing.JEditorPane();
         btnSend = new javax.swing.JButton();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         btnGetMessages = new javax.swing.JButton();
         btnCreateMessage = new javax.swing.JButton();
@@ -165,6 +170,8 @@ public class Morda extends javax.swing.JFrame {
         lblIn = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblOut = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tree = new javax.swing.JTree();
         jPanel4 = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel5 = new javax.swing.JPanel();
@@ -773,6 +780,18 @@ public class Morda extends javax.swing.JFrame {
             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        jPopupMenu1.setMaximumSize(new java.awt.Dimension(40, 6));
+        jPopupMenu1.setMinimumSize(new java.awt.Dimension(40, 6));
+
+        jMenuItem1.setText("Create folder");
+        jPopupMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Delete");
+        jPopupMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("Rename");
+        jPopupMenu1.add(jMenuItem3);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mailclient by Vital");
         setMinimumSize(new java.awt.Dimension(100, 100));
@@ -864,6 +883,23 @@ public class Morda extends javax.swing.JFrame {
 
         jLabel6.setText("Out:");
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Вхідні");
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Вихідні");
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Мусор");
+        treeNode1.add(treeNode2);
+        tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        tree.setMaximumSize(new java.awt.Dimension(65, 64));
+        tree.setRootVisible(false);
+        tree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                treeMouseReleased(evt);
+            }
+        });
+        jScrollPane6.setViewportView(tree);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -885,7 +921,8 @@ public class Morda extends javax.swing.JFrame {
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 109, Short.MAX_VALUE)))
+                        .addGap(0, 109, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -903,7 +940,9 @@ public class Morda extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(lblOut))
-                .addContainerGap(426, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -1016,7 +1055,7 @@ public class Morda extends javax.swing.JFrame {
                             .addComponent(lblSubject)))
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
@@ -1039,7 +1078,7 @@ public class Morda extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
         );
 
         jSplitPane2.setRightComponent(jPanel6);
@@ -1305,6 +1344,14 @@ public class Morda extends javax.swing.JFrame {
         fieldFrom.setText(runProp.getProperty("login")+"@"+runProp.getProperty("mailserver"));
     }//GEN-LAST:event_frameCreateMessageWindowOpened
 
+    private void treeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseReleased
+        if (evt.isPopupTrigger()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getSource();
+            System.out.println(evt.getSource());
+            jPopupMenu1.show(tree, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_treeMouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -1383,6 +1430,9 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1398,11 +1448,13 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
@@ -1421,6 +1473,7 @@ public class Morda extends javax.swing.JFrame {
     private javax.swing.JPanel panelPath;
     private javax.swing.JFrame propFrame;
     private javax.swing.JTable tableContacts;
+    private javax.swing.JTree tree;
     private javax.swing.JTextField txtFind;
     private javax.swing.JTextField txtLogin;
     private javax.swing.JTextField txtMessageArchive;
@@ -1533,7 +1586,13 @@ public class Morda extends javax.swing.JFrame {
                     FileInputStream fis = new FileInputStream(file);
                     MimeMessage mime = new MimeMessage(null, fis);
                     Address[] a = mime.getFrom();
-                    String from = a[0].toString();
+                    String from = "";
+                    
+                    try {
+                        from = a[0].toString();
+                    } catch (NullPointerException e) {
+                        util.print("Problem with 'From' record");
+                    }
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
                     String name = util.produceFileName(mime);
